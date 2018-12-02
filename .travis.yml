@@ -19,3 +19,17 @@ after_success:
   - docker push agutak/multi-nginx
   - docker push agutak/multi-server
   - docker push agutak/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: eu-west-1
+  app: multi-docker
+  env: MultiDocker-env
+  bucket-name: elasticbeanstalk-eu-west-1-428331836480
+  bucket-path: docker-multi
+
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
