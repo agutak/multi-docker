@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t agutak/react-test -f./client/Dockerfile.dev ./client
+
+script:
+  - docker run agutak/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t agutak/multi-client ./client
+  - docker build -t agutak/multi-nginx ./nginx
+  - docker build -t agutak/multi-server ./server
+  - docker build -t agutak/multi-worker ./worker
+  
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push agutak/multi-client
+  - docker push agutak/multi-nginx
+  - docker push agutak/multi-server
+  - docker push agutak/multi-worker
